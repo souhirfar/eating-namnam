@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Import itemControllers module for handling item-related operations
 const userControllers = require("./controllers/userControllers");
-
+const { hashPassword } = require("./services/auth");
 // Route to get a list of items
 router.get("/users", userControllers.browse);
 
@@ -16,7 +16,7 @@ router.get("/users", userControllers.browse);
 router.get("/users/:id", userControllers.read);
 
 // Route to add a new item
-router.post("/users", userControllers.add);
+router.post("/users", hashPassword, userControllers.add);
 
 /* ************************************************************************* */
 

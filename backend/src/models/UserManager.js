@@ -13,7 +13,7 @@ class UserManager extends AbstractManager {
     // Execute the SQL INSERT query to add a new item to the "item" table
     const [result] = await this.database.query(
       `insert into ${this.table} (username,  email, password, is_admin) values (?, ?, ?, ?)`,
-      [user.username, user.email, user.password, user.is_admin]
+      [user.username, user.email, user.hashedPassword, user.is_admin]
     );
 
     // Return the ID of the newly inserted item
