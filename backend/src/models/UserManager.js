@@ -1,19 +1,19 @@
 const AbstractManager = require("./AbstractManager");
 
-class ItemManager extends AbstractManager {
+class UserManager extends AbstractManager {
   constructor() {
     // Call the constructor of the parent class (AbstractManager)
     // and pass the table name "item" as configuration
-    super({ table: "item" });
+    super({ table: "user" });
   }
 
   // The C of CRUD - Create operation
 
-  async create(item) {
+  async create(user) {
     // Execute the SQL INSERT query to add a new item to the "item" table
     const [result] = await this.database.query(
-      `insert into ${this.table} (title) values (?)`,
-      [item.title]
+      `insert into ${this.table} (username,  email, password, is_admin) values (?, ?, ?, ?)`,
+      [user.username, user.email, user.hashedPassword, user.is_admin]
     );
 
     // Return the ID of the newly inserted item
@@ -41,19 +41,34 @@ class ItemManager extends AbstractManager {
     return rows;
   }
 
-  // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing item
+  async readUserByEmail(email) {
+    const [rows] = await this.database.query(
+      `select * from ${this.table} where email = ?`,
+      [email]
+    );
+    return rows;
+  }
 
-  // async update(item) {
-  //   ...
-  // }
+  async verifyToken(userId) {
+    const [rows] = await this.database.query(
+      `SELECT *
+             FROM user
+             WHERE id = ?`,
+      [userId]
+    );
+    return rows;
+  }
 
-  // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an item by its ID
+  async update(user) {
+    const [result] = await this.database.query(
+      `UPDATE 
+      ${this.table} SET username = ?, firstname = ?, lastname = ?
+      WHERE user.id = ?`,
+      [user.username, user.firstname, user.lastname, user.id]
+    );
 
-  // async delete(id) {
-  //   ...
-  // }
+    return result;
+  }
 }
 
-module.exports = ItemManager;
+module.exports = UserManager;
