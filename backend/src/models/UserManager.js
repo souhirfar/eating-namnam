@@ -41,19 +41,34 @@ class UserManager extends AbstractManager {
     return rows;
   }
 
-  // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing item
+  async readUserByEmail(email) {
+    const [rows] = await this.database.query(
+      `select * from ${this.table} where email = ?`,
+      [email]
+    );
+    return rows;
+  }
 
-  // async update(item) {
-  //   ...
-  // }
+  async verifyToken(userId) {
+    const [rows] = await this.database.query(
+      `SELECT *
+             FROM user
+             WHERE id = ?`,
+      [userId]
+    );
+    return rows;
+  }
 
-  // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an item by its ID
+  async update(user) {
+    const [result] = await this.database.query(
+      `UPDATE 
+      ${this.table} SET username = ?, firstname = ?, lastname = ?
+      WHERE user.id = ?`,
+      [user.username, user.firstname, user.lastname, user.id]
+    );
 
-  // async delete(id) {
-  //   ...
-  // }
+    return result;
+  }
 }
 
 module.exports = UserManager;
